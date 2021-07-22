@@ -1,0 +1,17 @@
+{
+  "name": "motyoserver",
+  "version": "1.0.0",
+  "description": "motyo websoket server",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "MOTYO",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^7.5.3"
+  },
+  "optionalDependencies": {
+    "utf-8-validate": "^5.0.5"
+  }
+}
