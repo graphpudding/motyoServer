@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
-
+let users = [];
+let bloks = {};
 //wsServer.on('connection', onConnect);
-
 let Connection = class {
   constructor() {
       this.wsServer = new WebSocket.Server({
@@ -10,6 +10,8 @@ let Connection = class {
     }
     onConnect(wsClient) {
       console.log('Новый пользователь');
+      users.push(wsClient)
+      console.log(this.users)
       // отправка приветственного сообщения клиенту
       wsClient.send('Привет');
       wsClient.on('message', function(message) {
@@ -17,14 +19,21 @@ let Connection = class {
         try {
           // сообщение пришло текстом, нужно конвертировать в JSON-формат
           const jsonMessage = JSON.parse(message);
+          console.log(jsonMessage.action);
           switch (jsonMessage.action) {
             case 'ECHO':
-              wsClient.send(jsonMessage.data);
+            console.log(bloks[jsonMessage.data])
+              users.forEach((item, i) => {
+                item.send(jsonMessage.data);
+              });
               break;
-            case 'PING':
-              setTimeout(function() {
-                wsClient.send('PONG');
-              }, 2000);
+            case 'build':
+                  if(bloks[jsonMessage.data] == undefined){
+                    bloks[jsonMessage.data] = true;
+                      users.forEach((item, i) => {
+                        item.send(jsonMessage.data);
+                      })
+                  }
               break;
             default:
               console.log('Неизвестная команда');
