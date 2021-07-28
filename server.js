@@ -27,6 +27,13 @@ let Connection = class {
                 item.send(jsonMessage.data);
               });
               break;
+            case 'newUser':
+              let ms = {name:"user",color:"1_0_1"}
+              users.forEach((item, i) => {
+                item.send(JSON.stringify(ms));
+              });
+
+              break;
             case 'build':
                   if(bloks[jsonMessage.data] == undefined){
                     bloks[jsonMessage.data] = true;
