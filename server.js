@@ -61,14 +61,14 @@ let Connection = class {
       // отправка приветственного сообщения клиенту
       wsClient.send(JSON.stringify({type:"message",ms:'Привет'}));
       wsClient.on('message', function(message) {
-        console.log(message);
+        console.log(message,"ms1");
         try {
           // сообщение пришло текстом, нужно конвертировать в JSON-формат
           const jsonMessage = JSON.parse(message);
           console.log(jsonMessage.action);
           switch (jsonMessage.action) {
             case 'ECHO':
-            console.log(bloks[jsonMessage.data])
+            console.log(bloks[jsonMessage.data],"data")
               self.users.forEach((item, i) => {
                 item.send(jsonMessage.data);
               });
@@ -76,7 +76,7 @@ let Connection = class {
             case 'newUser':
               let ms = {type:"initUser",name:"user",color: colors[0],obj: bloks,timers: vacT.toString(),dash: dash};
               wsClient.color = colors[0];
-              console.log(vacT.toString());
+              console.log(vacT.toString(),"vacT");
               colors.splice(0,1);
               wsClient.send(JSON.stringify(ms));
             break;
@@ -86,14 +86,19 @@ let Connection = class {
                     bloks[jsonMessage.name] = {user:jsonMessage.user,color: jsonMessage.color};
                       self.users.forEach((item, i) => {
                         item.send(JSON.stringify({type:"build",id: jsonMessage.name,color: jsonMessage.color,dash: dash}));
-                        setTimeout(()=>{
-                          item.send(JSON.stringify({type:"setTimer",id: jsonMessage.timerN,bool: true,color: jsonMessage.color}));
-                        },50);
                       })
-                      vacT.push(jsonMessage.timerN);
                       self.setVTimeOut(jsonMessage.name,null,false);
-                      self.setVTimeOut(jsonMessage.timerN,19800,true);
                   }
+              break;
+            case 'vacant':
+                  setTimeout(()=>{
+                    console.log({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.color})
+                    self.users.forEach((item, i) => {
+                      item.send(JSON.stringify({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.color}));
+                    })
+                  },50);
+                  vacT.push(jsonMessage.name);
+                  self.setVTimeOut(jsonMessage.name,19800,true);
               break;
             default:
               console.log('Неизвестная команда');
