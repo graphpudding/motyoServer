@@ -98,8 +98,15 @@ let Connection = class {
                     })
                   },50);
                   vacT.push(jsonMessage.name);
-                  self.setVTimeOut(jsonMessage.name,19800,true);
-              break;
+                  self.setVTimeOut(jsonMessage.name,9800,true);
+            break;
+            case 'delete':
+                    bloks[jsonMessage.name] = undefined;
+                    dash[jsonMessage.color]--;
+                    self.users.forEach((item, i) => {
+                      item.send(JSON.stringify({type:"delete",id: jsonMessage.name,bool: true,color: jsonMessage.color,dash: dash}));
+                    })
+            break;
             default:
               console.log('Неизвестная команда');
               break;
