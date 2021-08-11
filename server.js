@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 let bloks = {};
-let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
+//let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
+let colors = ["V2_1","V2_2","V2_3","V2_4"];
 let dash = {
 red: 0,
 blue: 0,
@@ -81,19 +82,11 @@ let Connection = class {
               wsClient.send(JSON.stringify(ms));
             break;
             case 'build':
-                //  if(bloks[jsonMessage.name] == undefined){
-                //    dash[jsonMessage.color]++ ;
-                //    bloks[jsonMessage.name] = {user:jsonMessage.user,color: jsonMessage.color};
-                //      self.users.forEach((item, i) => {
-                //        item.send(JSON.stringify({type:"build",id: jsonMessage.name,color: jsonMessage.color,dash: dash}));
-                //      })
-                //      self.setVTimeOut(jsonMessage.name,null,false);
-                //  }
                 if(bloks[jsonMessage.params.build.name] == undefined){
                   let build = jsonMessage.params.build
                   bloks[build.name] = build;
-                  dash[build.color]++ ;
-                  self.users.forEach((item, i) => {
+                  dash[build.color]++;
+                  self.users.forEach((item,i) => {
                     item.send(JSON.stringify({type:"build",id: build.name,color: build.color,dash: dash,nameBlock: build.nameBlock}));
                   })
                   jsonMessage.params.wave.forEach((item, i) => {
@@ -103,8 +96,22 @@ let Connection = class {
                     })
                   });
                 }
-                console.log(jsonMessage);
               break;
+              case 'delete':
+                    let build = jsonMessage.params.build
+                    bloks[build.name] = undefined;
+                    dash[build.color]--;
+                    self.users.forEach((item,i) => {
+                      console.log("send",{type:"delete",id: build.name,dash: dash});
+                      item.send(JSON.stringify({type:"delete",id: build.name,dash: dash}));
+                    })
+                    jsonMessage.params.wave.forEach((item, i) => {
+                      bloks[item.name] = item;
+                      self.users.forEach((user, i) => {
+                        user.send(JSON.stringify({type:"build",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                      })
+                    });
+                break;
             case 'vacant':
                   setTimeout(()=>{
                     console.log({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.color})
