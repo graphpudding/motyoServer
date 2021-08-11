@@ -41,7 +41,7 @@ let Connection = class {
           delete Timers[name];
           vacT.splice(index, 1);
           this.deleteEl();
-          console.log(name,vacT,Timers);
+          //console.log(name,vacT,Timers);
         },time);
       }else if(index > -1){
         this.users.forEach((item, i) => {
@@ -51,24 +51,24 @@ let Connection = class {
         delete Timers[name];
         vacT.splice(index, 1);
         this.deleteEl();
-        console.log(name,vacT,Timers);
+      //  console.log(name,vacT,Timers);
       }
     }
     onConnect(wsClient,self) {
-      console.log('Новый пользователь');
+    //  console.log('Новый пользователь');
       self.users.push(wsClient);
     //  console.log(self.users);
       // отправка приветственного сообщения клиенту
       wsClient.send(JSON.stringify({type:"message",ms:'Привет'}));
       wsClient.on('message', function(message) {
-        console.log(message,"ms1");
+      //  console.log(message,"ms1");
         try {
           // сообщение пришло текстом, нужно конвертировать в JSON-формат
           const jsonMessage = JSON.parse(message);
           console.log(jsonMessage.action);
           switch (jsonMessage.action) {
             case 'ECHO':
-            console.log(bloks[jsonMessage.data],"data")
+        //    console.log(bloks[jsonMessage.data],"data")
               self.users.forEach((item, i) => {
                 item.send(jsonMessage.data);
               });
@@ -81,14 +81,29 @@ let Connection = class {
               wsClient.send(JSON.stringify(ms));
             break;
             case 'build':
-                  if(bloks[jsonMessage.name] == undefined){
-                    dash[jsonMessage.color]++ ;
-                    bloks[jsonMessage.name] = {user:jsonMessage.user,color: jsonMessage.color};
-                      self.users.forEach((item, i) => {
-                        item.send(JSON.stringify({type:"build",id: jsonMessage.name,color: jsonMessage.color,dash: dash}));
-                      })
-                      self.setVTimeOut(jsonMessage.name,null,false);
-                  }
+                //  if(bloks[jsonMessage.name] == undefined){
+                //    dash[jsonMessage.color]++ ;
+                //    bloks[jsonMessage.name] = {user:jsonMessage.user,color: jsonMessage.color};
+                //      self.users.forEach((item, i) => {
+                //        item.send(JSON.stringify({type:"build",id: jsonMessage.name,color: jsonMessage.color,dash: dash}));
+                //      })
+                //      self.setVTimeOut(jsonMessage.name,null,false);
+                //  }
+                if(bloks[jsonMessage.params.build.name] == undefined){
+                  let build = jsonMessage.params.build
+                  bloks[build.name] = build;
+                  dash[build.color]++ ;
+                  self.users.forEach((item, i) => {
+                    item.send(JSON.stringify({type:"build",id: build.name,color: build.color,dash: dash,nameBlock: build.nameBlock}));
+                  })
+                  jsonMessage.params.wave.forEach((item, i) => {
+                    bloks[item.name] = item;
+                    self.users.forEach((user, i) => {
+                      user.send(JSON.stringify({type:"build",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                    })
+                  });
+                }
+                console.log(jsonMessage);
               break;
             case 'vacant':
                   setTimeout(()=>{
