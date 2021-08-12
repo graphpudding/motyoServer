@@ -1,9 +1,12 @@
 const WebSocket = require('ws');
 let bloks = {};
-//let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
 let colors = ["V2_1","V2_2","V2_3","V2_4"];
+//let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
 let dash = {
-red: 0,
+V2_1: 0,
+V2_2: 0,
+V2_3: 0,
+V2_4: 0,
 blue: 0,
 green: 0,
 white: 0,
@@ -92,7 +95,7 @@ let Connection = class {
                   jsonMessage.params.wave.forEach((item, i) => {
                     bloks[item.name] = item;
                     self.users.forEach((user, i) => {
-                      user.send(JSON.stringify({type:"build",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
                     })
                   });
                 }
@@ -108,7 +111,7 @@ let Connection = class {
                     jsonMessage.params.wave.forEach((item, i) => {
                       bloks[item.name] = item;
                       self.users.forEach((user, i) => {
-                        user.send(JSON.stringify({type:"build",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
                       })
                     });
                 break;
@@ -121,13 +124,6 @@ let Connection = class {
                   },50);
                   vacT.push(jsonMessage.name);
                   self.setVTimeOut(jsonMessage.name,9800,true);
-            break;
-            case 'delete':
-                    bloks[jsonMessage.name] = undefined;
-                    dash[jsonMessage.color]--;
-                    self.users.forEach((item, i) => {
-                      item.send(JSON.stringify({type:"delete",id: jsonMessage.name,bool: true,color: jsonMessage.color,dash: dash}));
-                    })
             break;
             default:
               console.log('Неизвестная команда');
