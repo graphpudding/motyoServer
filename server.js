@@ -136,6 +136,7 @@ let Connection = class {
       wsClient.on('close', function() {
         // отправка уведомления в консоль
         colors.push(wsClient.color);
+        console.log(colors)
         console.log('Пользователь отключился');
       })
     }
