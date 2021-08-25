@@ -86,16 +86,18 @@ let Connection = class {
             break;
             case 'build':
                 if(bloks[jsonMessage.params.build.name] == undefined){
-                  let build = jsonMessage.params.build
+                  let build = jsonMessage.params.build;
                   bloks[build.name] = build;
+                  console.log(bloks[build.name]);
                   dash[build.color]++;
                   self.users.forEach((item,i) => {
-                    item.send(JSON.stringify({type:"build",id: build.name,color: build.color,dash: dash,nameBlock: build.nameBlock}));
+                    item.send(JSON.stringify({type:"build",id: build.name,color: build.color,dash: dash,blockParams: build.blockParams}));
                   })
                   jsonMessage.params.wave.forEach((item, i) => {
                     bloks[item.name] = item;
+                    console.log(bloks[item.name]);
                     self.users.forEach((user, i) => {
-                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.color,dash: dash,blockParams: item.blockParams}));
                     })
                   });
                 }
@@ -111,7 +113,7 @@ let Connection = class {
                     jsonMessage.params.wave.forEach((item, i) => {
                       bloks[item.name] = item;
                       self.users.forEach((user, i) => {
-                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.color,dash: dash,nameBlock: item.nameBlock}));
+                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.color,dash: dash,blockParams: item.blockParams}));
                       })
                     });
                 break;
