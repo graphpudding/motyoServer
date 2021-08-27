@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 let bloks = {};
-let colors = ["Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2"];
+let styles = ["Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2"];
 //let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
 let dash = {
 V2_1: 0,
@@ -78,10 +78,10 @@ let Connection = class {
               });
             break;
             case 'newUser':
-              let ms = {type:"initUser",name:"user",color: colors[0],obj: bloks,timers: vacT.toString(),dash: dash};
-              wsClient.style = colors[0];
+              let ms = {type:"initUser",name:"user",style: styles[0],obj: bloks,timers: vacT.toString(),dash: dash};
+              wsClient.style = styles[0];
               console.log(vacT.toString(),"vacT");
-              colors.splice(0,1);
+              styles.splice(0,1);
               wsClient.send(JSON.stringify(ms));
             break;
             case 'build':
@@ -91,13 +91,13 @@ let Connection = class {
                   console.log(bloks[build.name]);
                   dash[build.style]++;
                   self.users.forEach((item,i) => {
-                    item.send(JSON.stringify({type:"build",id: build.name,color: build.style,dash: dash,blockParams: build.blockParams}));
+                    item.send(JSON.stringify({type:"build",id: build.name,style: build.style,dash: dash,blockParams: build.blockParams}));
                   })
                   jsonMessage.params.wave.forEach((item, i) => {
                     bloks[item.name] = item;
                     console.log(bloks[item.name]);
                     self.users.forEach((user, i) => {
-                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.style,dash: dash,blockParams: item.blockParams}));
+                      user.send(JSON.stringify({type:"rebuild",id: item.name,style: item.style,dash: dash,blockParams: item.blockParams}));
                     })
                   });
                 }
@@ -113,15 +113,15 @@ let Connection = class {
                     jsonMessage.params.wave.forEach((item, i) => {
                       bloks[item.name] = item;
                       self.users.forEach((user, i) => {
-                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.style,dash: dash,blockParams: item.blockParams}));
+                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,style: item.style,dash: dash,blockParams: item.blockParams}));
                       })
                     });
                 break;
             case 'vacant':
                   setTimeout(()=>{
-                    console.log({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.style})
+                    console.log({type:"setTimer",id: jsonMessage.name,bool: true,style: jsonMessage.style})
                     self.users.forEach((item, i) => {
-                      item.send(JSON.stringify({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.style}));
+                      item.send(JSON.stringify({type:"setTimer",id: jsonMessage.name,bool: true,style: jsonMessage.style}));
                     })
                   },50);
                   vacT.push(jsonMessage.name);
@@ -137,8 +137,8 @@ let Connection = class {
       })
       wsClient.on('close', function() {
         // отправка уведомления в консоль
-        colors.push(wsClient.style);
-        console.log(colors)
+        styles.push(wsClient.style);
+        console.log(styles)
         console.log('Пользователь отключился');
       })
     }
