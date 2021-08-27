@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 let bloks = {};
-let colors = ["V2_1","V2_2","V2_3","V2_4"];
+let colors = ["Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2"];
 //let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
 let dash = {
 V2_1: 0,
@@ -79,7 +79,7 @@ let Connection = class {
             break;
             case 'newUser':
               let ms = {type:"initUser",name:"user",color: colors[0],obj: bloks,timers: vacT.toString(),dash: dash};
-              wsClient.color = colors[0];
+              wsClient.style = colors[0];
               console.log(vacT.toString(),"vacT");
               colors.splice(0,1);
               wsClient.send(JSON.stringify(ms));
@@ -89,15 +89,15 @@ let Connection = class {
                   let build = jsonMessage.params.build;
                   bloks[build.name] = build;
                   console.log(bloks[build.name]);
-                  dash[build.color]++;
+                  dash[build.style]++;
                   self.users.forEach((item,i) => {
-                    item.send(JSON.stringify({type:"build",id: build.name,color: build.color,dash: dash,blockParams: build.blockParams}));
+                    item.send(JSON.stringify({type:"build",id: build.name,color: build.style,dash: dash,blockParams: build.blockParams}));
                   })
                   jsonMessage.params.wave.forEach((item, i) => {
                     bloks[item.name] = item;
                     console.log(bloks[item.name]);
                     self.users.forEach((user, i) => {
-                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.color,dash: dash,blockParams: item.blockParams}));
+                      user.send(JSON.stringify({type:"rebuild",id: item.name,color: item.style,dash: dash,blockParams: item.blockParams}));
                     })
                   });
                 }
@@ -105,7 +105,7 @@ let Connection = class {
               case 'delete':
                     let build = jsonMessage.params.build
                     bloks[build.name] = undefined;
-                    dash[build.color]--;
+                    dash[build.style]--;
                     self.users.forEach((item,i) => {
                       console.log("send",{type:"delete",id: build.name,dash: dash});
                       item.send(JSON.stringify({type:"delete",id: build.name,dash: dash}));
@@ -113,15 +113,15 @@ let Connection = class {
                     jsonMessage.params.wave.forEach((item, i) => {
                       bloks[item.name] = item;
                       self.users.forEach((user, i) => {
-                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.color,dash: dash,blockParams: item.blockParams}));
+                        user.send(JSON.stringify({type:"fastRebuild",id: item.name,color: item.style,dash: dash,blockParams: item.blockParams}));
                       })
                     });
                 break;
             case 'vacant':
                   setTimeout(()=>{
-                    console.log({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.color})
+                    console.log({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.style})
                     self.users.forEach((item, i) => {
-                      item.send(JSON.stringify({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.color}));
+                      item.send(JSON.stringify({type:"setTimer",id: jsonMessage.name,bool: true,color: jsonMessage.style}));
                     })
                   },50);
                   vacT.push(jsonMessage.name);
@@ -137,7 +137,7 @@ let Connection = class {
       })
       wsClient.on('close', function() {
         // отправка уведомления в консоль
-        colors.push(wsClient.color);
+        colors.push(wsClient.style);
         console.log(colors)
         console.log('Пользователь отключился');
       })
