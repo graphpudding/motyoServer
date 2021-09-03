@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 let bloks = {};
-let styles = ["Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2","Bloks_Cyber_V2"];
+let styles = ["Bloks_Cyber_V3","Bloks_Cyber_V3","Bloks_Cyber_V3","Bloks_Cyber_V3"];
 //let colors = ["red","blue","green","white","yellow","skyBlue","purple","orange","grassGreen","fullOrange","pink"];
 let dash = {
 V2_1: 0,
@@ -85,7 +85,7 @@ let Connection = class {
               wsClient.send(JSON.stringify(ms));
             break;
             case 'build':
-                if(bloks[jsonMessage.params.build.name] == undefined){
+                if(bloks[jsonMessage.params.build.name] == undefined || bloks[jsonMessage.params.build.name]["blockParams"]["type"] == "R"){
                   let build = jsonMessage.params.build;
                   bloks[build.name] = build;
                   console.log(bloks[build.name]);
